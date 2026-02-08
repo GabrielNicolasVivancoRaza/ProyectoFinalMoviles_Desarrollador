@@ -72,11 +72,20 @@ app.use('/api', apiRoutes);
 
 // Home page redirect
 app.get('/', (req, res) => {
-  if (req.session.isAdmin) {
-    res.redirect('/admin/dashboard');
-  } else {
-    res.redirect('/login.html');
-  }
+  res.json({
+    status: 'online',
+    message: 'Vivanco Turismo API',
+    version: '1.0.0',
+    endpoints: {
+      lugares: '/api/lugares',
+      health: '/api/health',
+      admin: '/login.html'
+    }
+  });
+});
+
+app.get('/test', (req, res) => {
+  res.json({ test: 'ok', timestamp: new Date().toISOString() });
 });
 
 // Start server

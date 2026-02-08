@@ -2,11 +2,22 @@ const express = require('express');
 const router = express.Router();
 const Lugar = require('../models/Lugar');
 
+// Endpoint de salud para verificar que la API funciona
+router.get('/health', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    message: 'API funcionando correctamente'
+  });
+});
+
 // API pública para la app Flutter
 // Obtener todos los lugares activos
 router.get('/lugares', async (req, res) => {
   try {
+    console.log('📍 GET /api/lugares - Iniciando consulta');
     const { categoria, provincia, canton, precioMin, precioMax, search } = req.query;
+    console.log('🔍 Parámetros:', { categoria, provincia, canton, precioMin, precioMax, search });
     
     let query = { activo: true };
     
@@ -37,7 +48,9 @@ router.get('/lugares', async (req, res) => {
       ];
     }
     
+    console.log('🔎 Query MongoDB:', JSON.stringify(query));
     const lugares = await Lugar.find(query).sort({ rating: -1, fechaCreacion: -1 });
+    console.log(`✅ Lugares encontrados: ${lugares.length}`);
     
     // Formatear datos para Flutter (igual al modelo LugarEntity)
     const lugaresFormateados = lugares.map(lugar => ({
@@ -60,9 +73,14 @@ router.get('/lugares', async (req, res) => {
     }));
     
     res.json(lugaresFormateados);
+    console.log('📤 Respuesta enviada exitosamente');
   } catch (error) {
-    console.error('Error al obtener lugares:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
+    console.error('❌ Error al obtener lugares:', error);
+    console.error('📍 Stack:', error.stack);
+    res.status(500).json({ 
+      error: 'Error interno del servidor',
+      message: error.message 
+    });
   }
 });
 
