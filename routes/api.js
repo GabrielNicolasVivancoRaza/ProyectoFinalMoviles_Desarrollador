@@ -11,6 +11,47 @@ router.get('/health', (req, res) => {
   });
 });
 
+// Endpoint de debug para verificar conexión a MongoDB
+router.get('/debug', async (req, res) => {
+  try {
+    const mongoose = require('mongoose');
+    const dbName = mongoose.connection.db ? mongoose.connection.db.databaseName : 'No conectado';
+    const collections = mongoose.connection.db ? await mongoose.connection.db.listCollections().toArray() : [];
+    
+    // Contar documentos en la colección lugars
+    const totalLugars = await Lugar.countDocuments({});
+    const totalActivos = await Lugar.countDocuments({ activo: true });
+    const totalInactivos = await Lugar.countDocuments({ activo: false });
+    
+    // Obtener un documento de ejemplo
+    const ejemploLugar = await Lugar.findOne({});
+    
+    res.json({
+      mongodb: {
+        connected: mongoose.connection.readyState === 1,
+        database: dbName,
+        collections: collections.map(c => c.name),
+        connectionString: process.env.MONGODB_URI ? process.env.MONGODB_URI.substring(0, 50) + '...' : 'No configurada'
+      },
+      coleccionLugars: {
+        total: totalLugars,
+        activos: totalActivos,
+        inactivos: totalInactivos,
+        ejemplo: ejemploLugar ? {
+          id: ejemploLugar._id,
+          nombre: ejemploLugar.nombre,
+          activo: ejemploLugar.activo
+        } : null
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      error: error.message,
+      stack: error.stack 
+    });
+  }
+});
+
 // API pública para la app Flutter
 // Obtener todos los lugares activos
 router.get('/lugares', async (req, res) => {
