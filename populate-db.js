@@ -5,10 +5,7 @@ require('dotenv').config();
 // Conectar a MongoDB (usa MONGODB_URI del .env o localhost por defecto)
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/vivanco_turismo';
 
-mongoose.connect(MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
+mongoose.connect(MONGODB_URI);
 
 console.log('🔌 Conectando a:', MONGODB_URI.includes('mongodb+srv') ? 'MongoDB Atlas (Nube)' : 'MongoDB Local');
 
