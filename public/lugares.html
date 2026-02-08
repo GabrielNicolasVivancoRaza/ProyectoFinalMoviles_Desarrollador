@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Lugares - Vivanco Turismo Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-navy: #1B365C;
+            --primary-blue: #2E86AB;
+            --accent-light: #A6E1FA;
+            --neutral-light: #F0F3F7;
+            --neutral-white: #FFFFFF;
+            --accent-gold: #F39C12;
+            --text-primary: #1B365C;
+            --text-secondary: #64748B;
+            --success-green: #10B981;
+            --warning-yellow: #F59E0B;
+            --error-red: #EF4444;
+            --shadow-light: rgba(27, 54, 92, 0.08);
+            --shadow-medium: rgba(27, 54, 92, 0.15);
+            --shadow-heavy: rgba(27, 54, 92, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--neutral-light) 0%, #E2E8F0 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-feature-settings: "cv03", "cv04", "cv11";
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-navy) 0%, var(--primary-blue) 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 8px 32px var(--shadow-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 700;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo i {
+            font-size: 24px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 32px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 40px;
+            gap: 24px;
+        }
+
+        .page-title {
+            flex: 1;
+        }
+
+        .page-title h1 {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .page-title p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .stat-badge {
+            background: var(--neutral-white);
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(166, 225, 250, 0.3);
+            box-shadow: 0 4px 12px var(--shadow-light);
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .stat-badge .number {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            display: block;
+        }
+
+        .stat-badge .label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        .toolbar {
+            background: var(--neutral-white);
+            padding: 32px;
+            border-radius: 16px;
+            border: 1px solid rgba(166, 225, 250, 0.3);
+            box-shadow: 0 8px 32px var(--shadow-light);
+            margin-bottom: 32px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 24px;
+            align-items: end;
+        }
+
+        .search-controls {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 16px;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .search-input {
+            position: relative;
+        }
+
+        .search-input i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        .search-input input {
+            width: 100%;
+            min-width: 320px;
+            padding: 12px 16px 12px 44px;
+            border: 2px solid rgba(166, 225, 250, 0.3);
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            background: var(--neutral-white);
+            transition: all 0.3s ease;
+        }
+
+        .search-input input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 4px 16px rgba(46, 134, 171, 0.2);
+        }
+
+        .filter-select {
+            position: relative;
+        }
+
+        .filter-select select {
+            padding: 12px 16px;
+            border: 2px solid rgba(166, 225, 250, 0.3);
+            border-radius: 12px;
+            background: var(--neutral-white);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select select:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        .toolbar-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-navy), var(--primary-blue));
+            color: white;
+            box-shadow: 0 6px 20px rgba(27, 54, 92, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(27, 54, 92, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--neutral-white);
+            color: var(--text-primary);
+            border: 2px solid rgba(166, 225, 250, 0.5);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-1px);
+        }
+
+        .lugares-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 24px;
+        }
+
+        .lugar-card {
+            background: var(--neutral-white);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(166, 225, 250, 0.3);
+            box-shadow: 0 8px 32px var(--shadow-light);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .lugar-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-navy), var(--primary-blue), var(--accent-light));
+        }
+
+        .lugar-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px var(--shadow-medium);
+        }
+
+        .card-image {
+            position: relative;
+            height: 240px;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .lugar-card:hover .card-image img {
+            transform: scale(1.05);
+        }
+
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(27, 54, 92, 0.1) 100%);
+        }
+
+        .card-badges {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            backdrop-filter: blur(10px);
+        }
+
+        .badge.categoria {
+            background: rgba(46, 134, 171, 0.9);
+            color: white;
+        }
+
+        .badge.precio {
+            background: rgba(243, 156, 18, 0.9);
+            color: white;
+        }
+
+        .badge.rating {
+            background: rgba(16, 185, 129, 0.9);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .card-actions {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            color: var(--text-secondary);
+        }
+
+        .action-btn:hover {
+            background: var(--primary-blue);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .card-content {
+            padding: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            gap: 12px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .card-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .card-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            padding: 16px 0;
+            border-top: 1px solid rgba(166, 225, 250, 0.2);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .meta-item i {
+            font-size: 14px;
+            color: var(--primary-blue);
+            width: 16px;
+        }
+
+        .meta-item span {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .card-actions-footer {
+            display: flex;
+            gap: 12px;
+            padding: 16px 24px;
+            background: rgba(166, 225, 250, 0.05);
+            border-top: 1px solid rgba(166, 225, 250, 0.2);
+        }
+
+        .lugar-imagen {
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+        }
+
+        .lugar-content {
+            padding: 20px;
+        }
+
+        .lugar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+
+        .lugar-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+
+        .lugar-categoria {
+            background: #667eea;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .lugar-info {
+            margin-bottom: 15px;
+        }
+
+        .lugar-info p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lugar-descripcion {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .lugar-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-edit {
+            background: #edf2f7;
+            color: #4a5568;
+        }
+
+        .btn-edit:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-delete {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .btn-delete:hover {
+            background: #fecaca;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                min-width: 100%;
+            }
+
+            .lugares-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="/admin/dashboard" class="logo">
+                <i class="fas fa-mountain-sun"></i>
+                <span>Vivanco Turismo</span>
+            </a>
+            <div class="nav-links">
+                <a href="/admin/dashboard"><i class="fas fa-chart-line"></i> Dashboard</a>
+                <a href="/admin/lugares"><i class="fas fa-map-marker-alt"></i> Lugares</a>
+                <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <div class="page-title">
+                <h1>Gestión de Destinos Turísticos</h1>
+                <p>Administra y supervisa todos los lugares y experiencias disponibles en la plataforma</p>
+            </div>
+            <div class="stats-bar">
+                <div class="stat-badge">
+                    <span class="number" id="totalLugares">0</span>
+                    <span class="label">Total</span>
+                </div>
+                <div class="stat-badge">
+                    <span class="number" id="lugaresActivos">0</span>
+                    <span class="label">Activos</span>
+                </div>
+                <div class="stat-badge">
+                    <span class="number" id="promedioRating">4.5</span>
+                    <span class="label">Rating Prom.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="toolbar">
+            <div class="search-controls">
+                <div class="form-group">
+                    <label>Buscar Lugares</label>
+                    <div class="search-input">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Nombre, categoría, ubicación...">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Filtrar Categoría</label>
+                    <div class="filter-select">
+                        <select id="categoriaFilter">
+                            <option value="">Todas las categorías</option>
+                            <option value="naturaleza">Naturaleza</option>
+                            <option value="cultura">Cultura</option>
+                            <option value="gastronomia">Gastronomía</option>
+                            <option value="hotel">Hotelería</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="toolbar-actions">
+                <button class="btn btn-secondary" onclick="exportarDatos()"><i class="fas fa-download"></i> Exportar</button>
+                <button class="btn btn-primary" onclick="openModal()"><i class="fas fa-plus"></i> Nuevo Lugar</button>
+            </div>
+        </div>
+
+        <div id="lugaresContainer">
+            <div class="loading">
+                <div style="display: inline-block; width: 20px; height: 20px; border: 2px solid #f3f3f3; border-top: 2px solid #667eea; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                <p>Cargando lugares...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para agregar/editar lugar -->
+    <div id="lugarModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Agregar Lugar</h2>
+            <form id="lugarForm">
+                <div class="form-group">
+                    <label for="nombre">Nombre del Lugar *</label>
+                    <input type="text" id="nombre" name="nombre" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="categoria">Categoría *</label>
+                        <select id="categoria" name="categoria" required>
+                            <option value="">Seleccionar categoría</option>
+                            <option value="hotel">Hotel</option>
+                            <option value="gastronomia">Gastronomía</option>
+                            <option value="cultura">Sitio Cultural</option>
+                            <option value="naturaleza">Lugar Natural</option>
+                            <option value="entretenimiento">Entretenimiento</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="precio">Precio (USD)</label>
+                        <input type="number" id="precio" name="precio" min="0" step="0.01">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="descripcion">Descripción *</label>
+                    <textarea id="descripcion" name="descripcion" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="direccion">Dirección *</label>
+                    <input type="text" id="direccion" name="direccion" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="provincia">Provincia *</label>
+                        <input type="text" id="provincia" name="provincia" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="canton">Cantón *</label>
+                        <input type="text" id="canton" name="canton" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="latitud">Latitud *</label>
+                        <input type="number" id="latitud" name="latitud" step="any" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="longitud">Longitud *</label>
+                        <input type="number" id="longitud" name="longitud" step="any" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="telefono">Teléfono</label>
+                        <input type="tel" id="telefono" name="telefono">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="horario">Horario</label>
+                        <input type="text" id="horario" name="horario" placeholder="ej: 9:00 - 18:00">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="rating">Rating (Estrellas) *</label>
+                        <input type="number" id="rating" name="rating" min="0" max="5" step="0.1" value="0" required>
+                        <small style="color: #666; font-size: 12px;">Valor entre 0 y 5 estrellas</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="numReviews">Número de Reseñas</label>
+                        <input type="number" id="numReviews" name="numReviews" min="0" value="0">
+                        <small style="color: #666; font-size: 12px;">Cantidad de reseñas recibidas</small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="imagenes">URL de Imagen Principal</label>
+                    <input type="url" id="imagenes" name="imagenes" placeholder="https://ejemplo.com/imagen.jpg">
+                    <small style="color: #666; font-size: 12px;">URL completa de la imagen del lugar</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="etiquetas">Etiquetas (separadas por comas)</label>
+                    <input type="text" id="etiquetas" name="etiquetas" placeholder="ej: playa, familia, aventura">
+                </div>
+
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 30px;">
+                    <button type="button" class="btn-small" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let lugares = [];
+        let editingId = null;
+
+        // Cargar lugares
+        async function loadLugares() {
+            try {
+                const response = await fetch('/admin/api/lugares');
+                lugares = await response.json();
+                renderLugares(lugares);
+            } catch (error) {
+                console.error('Error al cargar lugares:', error);
+                document.getElementById('lugaresContainer').innerHTML = 
+                    '<div class="empty-state"><h3>Error al cargar datos</h3><p>Por favor, intenta nuevamente</p></div>';
+            }
+        }
+
+        // Renderizar lugares
+        function renderLugares(lugaresData) {
+            const container = document.getElementById('lugaresContainer');
+            
+            if (lugaresData.length === 0) {
+                container.innerHTML = 
+                    '<div class="empty-state"><h3>No hay lugares registrados</h3><p>Agrega el primer lugar turístico</p></div>';
+                return;
+            }
+
+            const lugaresHTML = lugaresData.map(lugar => `
+                <div class="lugar-card">
+                    <div class="lugar-imagen" style="background-image: ${lugar.imagenes && lugar.imagenes.length > 0 ? `url('${lugar.imagenes[0]}')` : 'none'}; background-size: cover; background-position: center;">
+                        ${lugar.imagenes && lugar.imagenes.length > 0 ? '' : getCategoryIcon(lugar.categoria)}
+                    </div>
+                    <div class="lugar-content">
+                        <div class="lugar-header">
+                            <h3 class="lugar-title">${lugar.nombre}</h3>
+                            <span class="lugar-categoria">${lugar.categoria}</span>
+                        </div>
+                        <div class="lugar-info">
+                            <p><strong>⭐</strong> ${lugar.rating || 0}/5 (${lugar.numReviews || 0} reseñas)</p>
+                            <p><strong>📍</strong> ${lugar.direccion}</p>
+                            <p><strong>🌎</strong> ${lugar.provincia}, ${lugar.canton}</p>
+                            <p><strong>💰</strong> $${lugar.precio || 0}</p>
+                            ${lugar.telefono ? `<p><strong>📞</strong> ${lugar.telefono}</p>` : ''}
+                        </div>
+                        <div class="lugar-descripcion">${lugar.descripcion}</div>
+                        <div class="lugar-actions">
+                            <button class="btn-small btn-edit" onclick="editLugar('${lugar._id}')">✏️ Editar</button>
+                            <button class="btn-small btn-delete" onclick="deleteLugar('${lugar._id}')">🗑️ Eliminar</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = `<div class="lugares-grid">${lugaresHTML}</div>`;
+        }
+
+        // Obtener icono por categoría
+        function getCategoryIcon(categoria) {
+            const icons = {
+                hotel: '🏨',
+                gastronomia: '🍽️',
+                cultura: '🏛️',
+                naturaleza: '🌿',
+                entretenimiento: '🎪'
+            };
+            return icons[categoria] || '📍';
+        }
+
+        // Filtrar lugares
+        function filterLugares(searchTerm) {
+            const filtered = lugares.filter(lugar => 
+                lugar.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                lugar.categoria.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                lugar.provincia.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                lugar.canton.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            renderLugares(filtered);
+        }
+
+        // Event listener para búsqueda
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            filterLugares(e.target.value);
+        });
+
+        // Modal functions
+        function openModal(lugarId = null) {
+            editingId = lugarId;
+            const modal = document.getElementById('lugarModal');
+            const title = document.getElementById('modalTitle');
+            const form = document.getElementById('lugarForm');
+
+            if (lugarId) {
+                title.textContent = 'Editar Lugar';
+                const lugar = lugares.find(l => l._id === lugarId);
+                if (lugar) {
+                    fillForm(lugar);
+                }
+            } else {
+                title.textContent = 'Agregar Lugar';
+                form.reset();
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('lugarModal').style.display = 'none';
+            editingId = null;
+        }
+
+        function fillForm(lugar) {
+            document.getElementById('nombre').value = lugar.nombre;
+            document.getElementById('categoria').value = lugar.categoria;
+            document.getElementById('precio').value = lugar.precio || '';
+            document.getElementById('descripcion').value = lugar.descripcion;
+            document.getElementById('direccion').value = lugar.direccion;
+            document.getElementById('provincia').value = lugar.provincia;
+            document.getElementById('canton').value = lugar.canton;
+            document.getElementById('latitud').value = lugar.latitud;
+            document.getElementById('longitud').value = lugar.longitud;
+            document.getElementById('telefono').value = lugar.telefono || '';
+            document.getElementById('horario').value = lugar.horario || '';
+            document.getElementById('rating').value = lugar.rating || 0;
+            document.getElementById('numReviews').value = lugar.numReviews || 0;
+            document.getElementById('imagenes').value = lugar.imagenes && lugar.imagenes.length > 0 ? lugar.imagenes[0] : '';
+            document.getElementById('etiquetas').value = (lugar.etiquetas || []).join(', ');
+        }
+
+        // Enviar formulario
+        document.getElementById('lugarForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Procesar etiquetas
+            data.etiquetas = data.etiquetas ? data.etiquetas.split(',').map(tag => tag.trim()) : [];
+            
+            // Procesar imagenes
+            data.imagenes = data.imagenes ? [data.imagenes] : [];
+            
+            // Convertir números
+            data.latitud = parseFloat(data.latitud);
+            data.longitud = parseFloat(data.longitud);
+            data.precio = data.precio ? parseFloat(data.precio) : 0;
+            data.rating = data.rating ? parseFloat(data.rating) : 0;
+            data.numReviews = data.numReviews ? parseInt(data.numReviews) : 0;
+
+            try {
+                const url = editingId ? `/admin/api/lugares/${editingId}` : '/admin/api/lugares';
+                const method = editingId ? 'PUT' : 'POST';
+
+                const response = await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    closeModal();
+                    loadLugares();
+                } else {
+                    alert('Error al guardar el lugar');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error de conexión');
+            }
+        });
+
+        // Editar lugar
+        function editLugar(id) {
+            openModal(id);
+        }
+
+        // Eliminar lugar
+        async function deleteLugar(id) {
+            if (confirm('¿Estás seguro de que deseas eliminar este lugar?')) {
+                try {
+                    const response = await fetch(`/admin/api/lugares/${id}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (response.ok) {
+                        loadLugares();
+                    } else {
+                        alert('Error al eliminar el lugar');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error de conexión');
+                }
+            }
+        }
+
+        // Cerrar modal al hacer click fuera
+        document.getElementById('lugarModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                closeModal();
+            }
+        });
+
+        // Logout
+        async function logout() {
+            try {
+                await fetch('/auth/logout', { method: 'POST' });
+                window.location.href = '/login.html';
+            } catch (error) {
+                console.error('Error al cerrar sesión:', error);
+            }
+        }
+
+        // Verificar autenticación
+        fetch('/auth/status')
+            .then(response => response.json())
+            .then(data => {
+                if (!data.authenticated) {
+                    window.location.href = '/login.html';
+                }
+            })
+            .catch(console.error);
+
+        // Cargar lugares al inicio
+        loadLugares();
+    </script>
+
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</body>
+</html>
