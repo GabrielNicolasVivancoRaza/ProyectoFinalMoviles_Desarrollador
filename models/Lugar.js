@@ -88,4 +88,5 @@ lugarSchema.pre('save', function(next) {
   next();
 });
 
-module.exports = mongoose.model('Lugar', lugarSchema);
+// Exportar modelo con nombre de colección explícito
+module.exports = mongoose.model('Lugar', lugarSchema, 'lugars');
