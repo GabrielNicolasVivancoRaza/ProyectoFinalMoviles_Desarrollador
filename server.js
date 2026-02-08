@@ -8,9 +8,25 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/vivanco_turismo';
-const SESSION_SECRET = process.env.SESSION_SECRET || 'vivanco-turismo-secret-key';
 const NODE_ENV = process.env.NODE_ENV || 'development';
+const SESSION_SECRET = process.env.SESSION_SECRET || 'vivanco-turismo-secret-key';
+
+// MongoDB URI con validación
+const MONGODB_URI = process.env.MONGODB_URI || 
+  (NODE_ENV === 'production' 
+    ? null // Forzar error en producción si no hay MONGODB_URI
+    : 'mongodb://localhost:27017/vivanco_turismo');
+
+if (!MONGODB_URI) {
+  console.error('❌ ERROR: MONGODB_URI no está configurada');
+  console.error('📝 Configura la variable MONGODB_URI en Railway');
+  process.exit(1);
+}
+
+console.log('🔧 Configuración:');
+console.log('   Entorno:', NODE_ENV);
+console.log('   Puerto:', PORT);
+console.log('   MongoDB:', MONGODB_URI.includes('mongodb+srv') ? 'Atlas (Nube)' : 'Local');
 
 // MongoDB connection
 mongoose.connect(MONGODB_URI);
